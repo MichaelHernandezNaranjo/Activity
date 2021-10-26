@@ -1,21 +1,35 @@
 USE [Activity]
-
+--use [master]
+--drop database  [Activity]
+--create  database  [Activity]
 GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-create table BasicAuthentication(
+create table Application(
 	ApplicationId int NOT NULL,
-	UserName varchar(120) NOT NULL,
-	password varchar(120) NOT NULL,
+	ApplicationName varchar(120) NOT NULL,
 	Active bit NOT NULL,
-	constraint PK_BasicAuthentication primary key clustered ( ApplicationId asc),
+	constraint PK_Application primary key clustered (ApplicationId asc),
 	)
 GO
 
-insert into BasicAuthentication values (1001,'546456456','435346456',1)
+insert into Application values (1,'Activity',1)
+
+create table [Authorization](
+	ApplicationId int NOT NULL,
+	AuthorizationId int NOT NULL,
+	UserName varchar(120) NOT NULL,
+	password varchar(120) NOT NULL,
+	Active bit NOT NULL,
+	constraint PK_Authentication primary key clustered (ApplicationId asc, AuthorizationId asc),
+	constraint FK_Authentication_Application foreign key (ApplicationId) references Application (ApplicationId),
+	)
+GO
+
+insert into [Authorization] values (1,1,'/GkzTSkj4XXcfXrOn7+5bA64f+fH7wBdDRx4sIeFaFPYz6wh/eGbJSh66NZt4+YDvEgWgODwdLHp2eV4Mxy1/282v6BMzYmW','/GkzTSkj4XXcfXrOn7+5bA64f+fH7wBdDRx4sIeFaFPYz6wh/eGbJSh66NZt4+YDvEgWgODwdLHp2eV4Mxy1/282v6BMzYmW',1)
 
 create table Company(
 	CompanyId int NOT NULL,
@@ -23,7 +37,7 @@ create table Company(
 	Active bit NOT NULL,
 	CreationDate datetime NOT NULL,
 	CreationUserId int NULL,
-	constraint PK_Company primary key clustered ( CompanyId asc),
+	constraint PK_Company primary key clustered (CompanyId asc),
 	)
 GO
 
@@ -58,12 +72,12 @@ create table [User](
 	)
 GO
 
-insert into [User] values (1,1,'ADMINISTRADOR DEL SISTEMA','e10adc3949ba59abbe56e057f20f883e',1,1,GETDATE(),NULL)
+insert into [User] values (1,1,'SYSTEM ADMINISTRATOR','e10adc3949ba59abbe56e057f20f883e',1,1,GETDATE(),NULL)
 
 create table UserEmail(
 	CompanyId int NOT NULL,
 	UserId int NOT NULL,
-	Email varchar(100) NOT NULL unique,
+	Email varchar(100) NOT NULL,
 	UserEmailType varchar(10) NOT NULL, --PRINCIPAL
 	Verification bit NOT NULL,
 	VerificationDate datetime NULL,
@@ -76,6 +90,7 @@ create table UserEmail(
 	constraint FK_UserEmail_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
 	)
 GO
+
 
 insert into UserEmail values (1,1,'michaelhernandeznaranjo@gmail.com','PRINCIPAL',1,GETDATE(),1,GETDATE(),1)
 
@@ -110,6 +125,8 @@ create table Project(
 	)
 GO
 
+insert into Project values (1,1,'Test project',null,1,GETDATE(),1)
+
 --usuarios asignados al proyecto
 create table ProjectUser(
 	CompanyId int NOT NULL,
@@ -120,6 +137,23 @@ create table ProjectUser(
 	constraint FK_ProjectUser_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId)
 	)
 GO
+
+create table Sprint(
+	CompanyId int NOT NULL,
+	ProjectId int NOT NULL,
+	SprintId int NOT NULL,
+	SprintName varchar(120) NOT NULL,
+	Description varchar(500) NULL,-- Descricpion del sprint
+	Active bit NOT NULL,
+	CreationDate datetime NOT NULL,
+	CreationUserId int NOT NULL,
+	constraint PK_Sprint primary key clustered (CompanyId asc, ProjectId asc, SprintId asc),
+	constraint FK_Sprint_Company foreign key (CompanyId) references Company (CompanyId),
+	constraint FK_Sprint_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
+	constraint FK_Sprint_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	)
+GO
+
 
 create table TaskStatus(
 	CompanyId int NOT NULL,
@@ -136,9 +170,11 @@ create table TaskStatus(
 	)
 GO
 
-insert into TaskStatus values (1,1,1,'EN ESPERA',1,GETDATE(),1)
-insert into TaskStatus values (1,1,2,'EN PROCESO',1,GETDATE(),1)
-insert into TaskStatus values (1,1,3,'FINALIZADA',1,GETDATE(),1)
+insert into TaskStatus values (1,1,1,'Backlog',1,GETDATE(),1)
+insert into TaskStatus values (1,1,2,'To do',1,GETDATE(),1)
+insert into TaskStatus values (1,1,3,'Testing',1,GETDATE(),1)
+insert into TaskStatus values (1,1,4,'In progress',1,GETDATE(),1)
+insert into TaskStatus values (1,1,5,'Done',1,GETDATE(),1)
 
 --Tareas
 create table Task(
@@ -147,6 +183,8 @@ create table Task(
 	TaskId int NOT NULL,
 	TaskName varchar(120) NOT NULL,-- PROYECTO X
 	Description varchar(500) NULL,-- Descricpion del tarea
+
+	SprintId int NOT NULL,
 
 	StartDate datetime NULL,-- Fecha de inicio
 	EndDate datetime NULL,-- Fecha fin
@@ -161,6 +199,7 @@ create table Task(
 	constraint PK_Task primary key clustered (CompanyId asc,ProjectId asc, TaskId asc),
 	constraint FK_Task_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_Task_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
+	constraint FK_Task_Sprint foreign key (CompanyId,ProjectId,SprintId) references Sprint (CompanyId,ProjectId,SprintId),
 	constraint FK_Task_TaskStatus foreign key (CompanyId,ProjectId,TaskStatusId) references TaskStatus (CompanyId,ProjectId,TaskStatusId),
 	constraint FK_Task_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
 	)

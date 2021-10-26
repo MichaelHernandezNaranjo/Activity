@@ -17,18 +17,31 @@ namespace Activity.Infrastructure.Repositories
         public authRepository(IConfiguration configuration)
             : base(configuration)
         { }
+        public async Task<authenticationResponse> Authentication(authenticationRequest _authenticationRequest)
+        {
+            var query = "exec SP_Login @CompanyId, @Email, @Password;";
+            var parameters = new DynamicParameters();
+            parameters.Add("CompanyId", _authenticationRequest.CompanyId, DbType.Int32);
+            parameters.Add("Email", _authenticationRequest.Email, DbType.String);
+            parameters.Add("Password", _authenticationRequest.Password, DbType.String);
+            using (var connection = CreateConnection())
+            {
+                var res = await connection.QueryFirstOrDefaultAsync<authenticationResponse>(query, parameters);
+                return res;
+            }
+        }
 
-        public async Task<authorization> Authorization(string userName, string password)
+        public async Task<authorizationResponse> Authorization(authorizationRequest _authorizationRequest)
         {
             try
             {
-                var query = "SELECT ApplicationId,UserName FROM [BasicAuthentication] WHERE UserName = @UserName and Password = @Password AND Active = 1;";
+                var query = "SELECT ApplicationId,AuthorizationId,UserName FROM [Authorization] with (nolock) WHERE UserName = @UserName and Password = @Password AND Active = 1;";
                 var parameters = new DynamicParameters();
-                parameters.Add("UserName", userName, DbType.String);
-                parameters.Add("Password", password, DbType.String);
+                parameters.Add("UserName", _authorizationRequest.UserName, DbType.String);
+                parameters.Add("Password", _authorizationRequest.Password, DbType.String);
                 using (var connection = CreateConnection())
                 {
-                    var res = await connection.QueryFirstOrDefaultAsync<authorization>(query, parameters);
+                    var res = await connection.QueryFirstOrDefaultAsync<authorizationResponse>(query, parameters);
                     return res;
                 }
             }

@@ -32,6 +32,13 @@ namespace Activity.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddCors(c =>
+            //{
+            //    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+            //    c.AddPolicy("AllowAnyMethod", options => options.AllowAnyMethod());
+            //    c.AddPolicy("AllowAnyHeader", options => options.AllowAnyHeader());
+
+            //});
             services.AddCors();
 
             services.AddControllers(options =>
@@ -82,6 +89,8 @@ namespace Activity.Api
             {
                 endpoints.MapControllers();
             });
+
+            
         }
     }
 }

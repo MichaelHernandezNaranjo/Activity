@@ -8,8 +8,18 @@ namespace Activity.Core.Entities
 {
     public class authorization
     {
+        public string UserName { get; set; }
+    }
+
+    public class authorizationRequest : authorization
+    {
+        public string Password { get; set; }
+    }
+    public class authorizationResponse : authorization
+    {
         public int ApplicationId { get; set; }
-        public string userName { get; set; }
+        public int AuthorizationId { get; set; }
+
     }
 
 }

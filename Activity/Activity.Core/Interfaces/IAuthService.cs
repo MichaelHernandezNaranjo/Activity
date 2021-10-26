@@ -9,7 +9,7 @@ namespace Activity.Core.Interfaces
 {
     public interface IAuthService
     {
-        //Task<user> Authenticate(string userId, string password);
-        Task<authorization> Authorization(string userName, string password);
+        Task<authenticationResponse> Authentication(authenticationRequest _authenticationRequest);
+        Task<authorizationResponse> Authorization(authorizationRequest _authorizationRequest);
     }
 }

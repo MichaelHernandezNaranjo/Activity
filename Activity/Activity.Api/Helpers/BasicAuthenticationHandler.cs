@@ -47,9 +47,8 @@ namespace Activity.Api.Helpers
                 var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
                 var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
                 var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
-                var username = credentials[0];
-                var password = credentials[1];
-                user = await _authService.Authorization(username, password);
+                var _authorizationRequest = new authorizationRequest { UserName = credentials[0], Password = credentials[1] };
+                user = await _authService.Authorization(_authorizationRequest);
             }
             catch
             {
@@ -60,7 +59,7 @@ namespace Activity.Api.Helpers
                 return AuthenticateResult.Fail("Invalid Username or Password");
 
             var claims = new[] {
-                new Claim(ClaimTypes.NameIdentifier, user.userName)
+                new Claim("UserName", user.UserName)
             };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
