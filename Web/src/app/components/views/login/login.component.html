@@ -1,0 +1,57 @@
+<!-- Start Login Area -->
+<div class="login-area bg-image">
+    <div class="d-table">
+        <div class="d-table-cell">
+            <div class="login-form">
+                <div class="logo">
+                    <a href="dashboard-analytics.html"><img src="assets/img/logo.png" alt="image"></a>
+                </div>
+
+                <h2>Welcome</h2>
+
+                <form>
+                    <div class="form-group">
+                        <input type="email" class="form-control" name="email" [(ngModel)]="email" placeholder="Email" autocomplete="off" >
+                        <span class="label-title"><i class='bx bx-envelope'></i></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" [(ngModel)]="password" placeholder="Contraseña">
+                        <span class="label-title"><i class='bx bx-lock'></i></span>
+                    </div>
+
+                    <div class="form-group">
+                        <select class="form-control" name="companyId" [(ngModel)]="companyId" >
+                            <option value="{{company.companyId}}" *ngFor="let company of lstCompany">
+                                {{company.companyName}}
+                            </option>
+                        </select>
+                        <span class="label-title"><i class='bx bx-lock'></i></span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="remember-forgot">
+                            <label class="checkbox-box">Remember me
+                                <input type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
+
+                            <a href="forgot-password.html" class="forgot-password">Forgot password?</a>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-btn" (click)="onClick()" >Ingresar</button>
+
+                    <table>
+                        <tr *ngFor="let item of items">
+                          <td>{{item}}</td>
+                          </tr>
+                      </table>
+
+                    <p class="mb-0">Don’t have an account? <a href="register-with-image.html">Sign Up</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Login Area -->

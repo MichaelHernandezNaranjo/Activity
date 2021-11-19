@@ -26,13 +26,6 @@ namespace Activity.Core.Services
             return res;
         }
 
-        public async Task<authorizationResponse> Authorization(authorizationRequest _authorizationRequest)
-        {
-            _authorizationRequest.UserName = securityService.Encrypt(_authorizationRequest.UserName);
-            _authorizationRequest.Password = securityService.Encrypt(_authorizationRequest.Password);
-            return await _authRepository.Authorization(_authorizationRequest);
-        }
-
     }
 
 }

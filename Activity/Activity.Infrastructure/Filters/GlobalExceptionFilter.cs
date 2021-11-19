@@ -17,21 +17,26 @@ namespace Activity.Infrastructure.Filters
             if (context.Exception.GetType() == typeof(BusinessException))
             {
                 var exception = (BusinessException)context.Exception;
+                var arrayConten = exception.Message.Split(Core.Constant.General.Split);
                 var validation = new
                 {
-                    Status = 400,
-                    Title = "Bad Request",
-                    Detail = exception.Message
+                    Status = Convert.ToInt32(arrayConten[0]),
+                    Title = arrayConten[1],
+                    Detail = arrayConten[2]
                 };
-
                 var json = new
                 {
                     error = new { validation }
                 };
-                context.Result = new BadRequestObjectResult(json);
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Result = new ObjectResult(json)
+                {
+                    StatusCode = validation.Status,
+                    DeclaredType = typeof(ProducesErrorResponseTypeAttribute)
+                };
+                context.HttpContext.Response.StatusCode = validation.Status;
                 context.ExceptionHandled = true;
             }
+
         }
     }
 

@@ -1,0 +1,66 @@
+
+.card-body button {
+    display: block;
+    width: 100%;
+    border-radius: 5px;
+    background-color: #f5f6f7;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    border: 1px solid #ccd0d5;
+    color: #4b4f56;
+    margin-top: 15px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.card-body button:hover {
+    background-color: #F8CD5B;
+    color: #ffffff;
+    border-color: #F8CD5B;
+}
+.ml-3, .mx-3 {
+    margin-left: 0!important;
+}
+.card{
+    border-width: 1px;
+    border-style: solid;
+    border: 1px solid #ccd0d5;
+    
+}
+.card:hover{
+    border: 1px solid #F8CD5B;
+    background-color: #fbffd7;
+}
+h6 a{
+    color: #7c600a !important;
+    font-size: large !important;
+}
+.card:hover > .card-header{
+    background-color: #fbffd7;
+}
+.ng2-tag-input.ng2-tag-input--focused[_ngcontent-xyk-c60] {
+    border-bottom: 2pxsolid #F8CD5B !important;
+}
+.ng2-tag-input.ng2-tag-input:focus {
+    border-bottom: 2pxsolid #F8CD5B !important;
+}
+
+._ngcontent-pxo-c56 :focus > ._ngcontent-xyk-c60{
+    border-bottom: 2pxsolid #F8CD5B !important;
+}
+
+tag[_ngcontent-ubj-c60]:not(.readonly):not(.tag--editing):active {
+    background: #d6ee0d;
+    color: #fff;
+    box-shadow: 0 2px 3px 1px #d4d1d1;
+}
+
+.card .card-header .dropdown .dropdown-menu.show {
+    margin-top: 25px;
+    opacity: 1;
+    visibility: visible;
+    border-radius: 4px;
+    border: solid 1px #F8CD5B;
+}

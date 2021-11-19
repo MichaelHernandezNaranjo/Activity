@@ -1,0 +1,54 @@
+<div class="timeline-story-content">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="timeline-story-header d-flex align-items-center">
+                <div class="info ml-3">
+                    <h6 *ngIf="!editar"><a>{{project.projectName}}</a></h6>
+                    <input type="text" class="form-control" *ngIf="editar" name="project.projectName" [(ngModel)]="project.projectName" autocomplete="off" />
+                    <span class="d-block">{{project.creationDate | date:'medium'}}</span>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class='bx bx-dots-horizontal-rounded' ></i>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item d-flex align-items-center" *ngIf="editar" (click)="this.editar = false">
+                        <i class='bx bx-no-entry'></i> Cancelar
+                    </a>
+                    <a class="dropdown-item d-flex align-items-center" *ngIf="!editar" (click)="this.editar = true">
+                        <i class='bx bx-edit-alt'></i> Editar
+                    </a>
+                    <a class="dropdown-item d-flex align-items-center" *ngIf="!editar" href="#">
+                        <i class='bx bx-trash'></i> Eliminar
+                    </a>
+                    <a class="dropdown-item d-flex align-items-center" *ngIf="!editar" href="#">
+                        <i class='bx bx-check'></i> Completar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <p class="mb-0" *ngIf="!editar">{{project.description | truncate: 60 }}</p>
+            <textarea class="form-control" rows="6" *ngIf="editar" name="project.description" [(ngModel)]="project.description"></textarea>
+            <div class="feedback-summary mt-4">
+                <a href="#" data-toggle="tooltip" data-placement="top" title="Like"><i class='bx bx-spreadsheet'></i> Sprints 2</a>
+                <a href="#" data-toggle="tooltip" data-placement="top" title="Comment"><i class='bx bx-task'></i> Tareas 10</a>
+                <a href="#" data-toggle="tooltip" data-placement="top" title="Share"><i class='bx bx-user'></i> Miembros 2</a>
+            </div>
+            <div class="form-group">
+                <br>
+                <tag-input [ngModel]="lstUser" [theme]="'foundation-theme'" displayBy="userName" identifyBy="userId" [disable]="!editar"  [secondaryPlaceholder]="'Search in Github'" >
+                <tag-input-dropdown [autocompleteItems]="users" displayBy="userName" identifyBy="userId">
+                </tag-input-dropdown>
+                </tag-input>
+            </div>
+
+            <button type="submit" *ngIf="!editar" (click)="Seleccionar(project)">Seleccionar</button>
+            <button type="submit" *ngIf="editar" (click)="Guardar(project)">Guardar</button>
+        </div>
+    </div>
+</div>
+<br>

@@ -9,9 +9,7 @@ namespace Activity.Core.Interfaces
 {
     public interface IAuthRepository /*: IRepository<authorization>*/
     {
-        
         Task<authenticationResponse> Authentication(authenticationRequest _authenticationRequest);
-        Task<authorizationResponse> Authorization(authorizationRequest _authorizationRequest);
     }
 
 }

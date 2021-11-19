@@ -1,0 +1,21 @@
+button {
+    display: block;
+    
+    border-radius: 5px;
+    background-color: #f5f6f7;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    border: 1px solid #ccd0d5;
+    color: #4b4f56;
+    margin-top: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+button:hover {
+    background-color: #F8CD5B;
+    color: #ffffff;
+    border-color: #F8CD5B;
+}

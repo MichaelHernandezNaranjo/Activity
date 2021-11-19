@@ -10,6 +10,5 @@ namespace Activity.Core.Interfaces
     public interface IAuthService
     {
         Task<authenticationResponse> Authentication(authenticationRequest _authenticationRequest);
-        Task<authorizationResponse> Authorization(authorizationRequest _authorizationRequest);
     }
 }

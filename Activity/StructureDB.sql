@@ -8,28 +8,6 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-create table Application(
-	ApplicationId int NOT NULL,
-	ApplicationName varchar(120) NOT NULL,
-	Active bit NOT NULL,
-	constraint PK_Application primary key clustered (ApplicationId asc),
-	)
-GO
-
-insert into Application values (1,'Activity',1)
-
-create table [Authorization](
-	ApplicationId int NOT NULL,
-	AuthorizationId int NOT NULL,
-	UserName varchar(120) NOT NULL,
-	password varchar(120) NOT NULL,
-	Active bit NOT NULL,
-	constraint PK_Authentication primary key clustered (ApplicationId asc, AuthorizationId asc),
-	constraint FK_Authentication_Application foreign key (ApplicationId) references Application (ApplicationId),
-	)
-GO
-
-insert into [Authorization] values (1,1,'/GkzTSkj4XXcfXrOn7+5bA64f+fH7wBdDRx4sIeFaFPYz6wh/eGbJSh66NZt4+YDvEgWgODwdLHp2eV4Mxy1/282v6BMzYmW','/GkzTSkj4XXcfXrOn7+5bA64f+fH7wBdDRx4sIeFaFPYz6wh/eGbJSh66NZt4+YDvEgWgODwdLHp2eV4Mxy1/282v6BMzYmW',1)
 
 create table Company(
 	CompanyId int NOT NULL,
@@ -154,6 +132,7 @@ create table Sprint(
 	)
 GO
 
+insert into Sprint values (1,1,1,'Testing','Sprint de prueba',1,GETDATE(),1)
 
 create table TaskStatus(
 	CompanyId int NOT NULL,
@@ -184,7 +163,7 @@ create table Task(
 	TaskName varchar(120) NOT NULL,-- PROYECTO X
 	Description varchar(500) NULL,-- Descricpion del tarea
 
-	SprintId int NOT NULL,
+	SprintId int NULL,
 
 	StartDate datetime NULL,-- Fecha de inicio
 	EndDate datetime NULL,-- Fecha fin

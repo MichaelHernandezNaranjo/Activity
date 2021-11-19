@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Activity.Core.Entities
 {
 
-    public class user
+    public class user : baseEntity
     {
         public int CompanyId { get; set; }
         public int UserId { get; set; }

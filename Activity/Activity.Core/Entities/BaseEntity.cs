@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Activity.Core.Entities
 {
-    public class BaseEntity
+    public class baseEntity
     {
     }
 }

@@ -1,16 +1,19 @@
-﻿using System;
+﻿using Activity.Core.Entities;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Activity.Core.Services
 {
     public static class securityService
     {
-
-        static string key = "Activity2021";
         public static string Encrypt(string texto)
         {
             //arreglo de bytes donde guardaremos la llave
@@ -28,7 +31,7 @@ namespace Activity.Core.Services
             //se guarda la llave para que se le realice
             //hashing
             keyArray = hashmd5.ComputeHash(
-            UTF8Encoding.UTF8.GetBytes(key));
+            UTF8Encoding.UTF8.GetBytes(Constant.General.KeyCrypt));
 
             hashmd5.Clear();
 
@@ -71,7 +74,7 @@ namespace Activity.Core.Services
             new MD5CryptoServiceProvider();
 
             keyArray = hashmd5.ComputeHash(
-            UTF8Encoding.UTF8.GetBytes(key));
+            UTF8Encoding.UTF8.GetBytes(Constant.General.KeyCrypt));
 
             hashmd5.Clear();
 
@@ -92,6 +95,42 @@ namespace Activity.Core.Services
             tdes.Clear();
             //se regresa en forma de cadena
             return UTF8Encoding.UTF8.GetString(resultArray);
+        }
+
+        public static T XmlDeserialize<T>(this string toDeserialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+            using (StringReader textReader = new StringReader(toDeserialize))
+            {
+                return (T)xmlSerializer.Deserialize(textReader);
+            }
+        }
+
+        public static string XmlSerialize<T>(this T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
+            }
+        }
+
+        public static T JsonDeserialize<T>(this string toDeserialize)
+        {
+            return JsonConvert.DeserializeObject<T>(toDeserialize);
+        }
+
+        public static string JsonSerialize<T>(this T toSerialize)
+        {
+            return JsonConvert.SerializeObject(toSerialize);
+        }
+
+        public static authenticationResponse UserClaim(HttpContext httpContext)
+        {
+            var _res = httpContext.User.Claims.FirstOrDefault(c => c.Type == Constant.General.ClaimTypeUser).Value;
+            authenticationResponse res = securityService.JsonDeserialize<authenticationResponse>(_res);
+            return res;
         }
 
     }

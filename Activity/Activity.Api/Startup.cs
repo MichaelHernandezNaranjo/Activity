@@ -1,9 +1,11 @@
-using Activity.Api.Helpers;
+using Activity.Core.Entities;
 using Activity.Core.Interfaces;
 using Activity.Core.Services;
+using Activity.Infrastructure.Extensions;
 using Activity.Infrastructure.Filters;
 using Activity.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,10 +14,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Activity.Api
@@ -46,13 +50,32 @@ namespace Activity.Api
                 options.Filters.Add<GlobalExceptionFilter>();
             });
 
-            // configure basic authentication 
-            services.AddAuthentication("BasicAuthentication")
-                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            services.AddScoped<IAuthRepository, authRepository>();
-            services.AddScoped<IAuthService, authService>();
 
+            var res = Configuration.GetSection("AppSettings").Get<AppSettings>();
+
+            var key = Encoding.ASCII.GetBytes(res.Secret);
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+
+            services.AddServices();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

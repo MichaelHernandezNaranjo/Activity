@@ -31,25 +31,6 @@ namespace Activity.Infrastructure.Repositories
             }
         }
 
-        public async Task<authorizationResponse> Authorization(authorizationRequest _authorizationRequest)
-        {
-            try
-            {
-                var query = "SELECT ApplicationId,AuthorizationId,UserName FROM [Authorization] with (nolock) WHERE UserName = @UserName and Password = @Password AND Active = 1;";
-                var parameters = new DynamicParameters();
-                parameters.Add("UserName", _authorizationRequest.UserName, DbType.String);
-                parameters.Add("Password", _authorizationRequest.Password, DbType.String);
-                using (var connection = CreateConnection())
-                {
-                    var res = await connection.QueryFirstOrDefaultAsync<authorizationResponse>(query, parameters);
-                    return res;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessException(ex.Message);
-            }
-        }
 
     }
 

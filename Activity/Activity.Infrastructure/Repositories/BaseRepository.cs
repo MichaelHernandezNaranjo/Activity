@@ -21,6 +21,7 @@ namespace Activity.Infrastructure.Repositories
         {
             return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         }
+
     }
 
 }
