@@ -1,0 +1,4 @@
+.todo-content-area .content-right {
+    float: right;
+    width: calc(100%);
+}
