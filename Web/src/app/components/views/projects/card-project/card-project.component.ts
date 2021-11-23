@@ -4,6 +4,8 @@ import { TagModel } from 'ngx-chips/core/accessor';
 import { ProjectService } from 'src/app/services/project.service';
 import { userReponse } from 'src/app/interfaces/user';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from "ngx-spinner";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-card-project',
@@ -20,7 +22,7 @@ export class CardProjectComponent implements OnInit {
   @Input() users: userReponse[];
 
   lstUser: projectUser[] = [{ userId: 4, userName: "prueba" }];
-  constructor(private _project: ProjectService, private router: Router) {
+  constructor(private _project: ProjectService, private router: Router, private spinner: NgxSpinnerService, private toastr: ToastrService) {
     
    }
 
@@ -51,21 +53,22 @@ export class CardProjectComponent implements OnInit {
       result => {
         if(result){
          // this.Consultar();
+         this.toastr.success('Guardado exitoso');
         }else{
-          alert('error')
+          this.toastr.error('Error');
         }
       },
-      error => {
-       console.error(error.message);
+      err => {
+       this.toastr.error(err.message);
       }
     );
     }else{
       this._project.Update(project_).subscribe(
         result => {
           if(result){
-            alert('ok')
+            this.toastr.success('Guardado exitoso');
           }else{
-            alert('error')
+            this.toastr.error('Error');
           }
         },
         error => {

@@ -18,7 +18,7 @@ namespace Activity.Infrastructure.Repositories
         { }
         public async Task<List<sprintResponse>> GetAll(int CompanyId, int ProjectId)
         {
-            var query = "select * from [Sprint] where CompanyId = @CompanyId and ProjectId=@ProjectId order by SprintId desc;";
+            var query = "select * from Sprint where CompanyId = @CompanyId and ProjectId=@ProjectId order by SprintId desc;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             parameters.Add("ProjectId", ProjectId, DbType.Int32);
@@ -31,7 +31,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<sprintResponse> GetById(int CompanyId, int ProjetId, int SprintId)
         {
-            var query = "select * from [Sprint] where CompanyId=@CompanyId and ProjetId = @ProjetId and SprintId=@SprintId;";
+            var query = "select * from Sprint where CompanyId=@CompanyId and ProjetId = @ProjetId and SprintId=@SprintId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             parameters.Add("ProjetId", ProjetId, DbType.Int32);
@@ -45,8 +45,8 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<int> Add(sprintRequest entity)
         {
-            var query = "declare @Consecutivo int set @Consecutivo = (select isnull(max(SprintId),0) + 1 from [Sprint] where CompanyId = @CompanyId and ProjetId = @ProjetId);";
-            query += "insert into [Sprint] OUTPUT Inserted.SprintId values (@CompanyId,@ProjetId,@Consecutivo,@SprintName,@Description,@Active,getdate(),@CreationUserId);";
+            var query = "declare @Consecutivo int set @Consecutivo = (select isnull(max(SprintId),0) + 1 from Sprint where CompanyId = @CompanyId and ProjetId = @ProjetId);";
+            query += "insert into Sprint OUTPUT Inserted.SprintId values (@CompanyId,@ProjetId,@Consecutivo,@SprintName,@Description,@Active,getdate(),@CreationUserId);";
             var parameters = new DynamicParameters();
             using (var connection = CreateConnection())
             {
@@ -57,7 +57,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<bool> Update(sprintRequest entity)
         { 
-            var query = "update [Sprint] set SprintName=@SprintName,Description=@Description,Active=@Active where CompanyId=@CompanyId and ProjetId = @ProjetId and SprintId=@SprintId;";
+            var query = "update Sprint set SprintName=@SprintName,Description=@Description,Active=@Active where CompanyId=@CompanyId and ProjetId = @ProjetId and SprintId=@SprintId;";
             using (var connection = CreateConnection())
             {
                 var res = await connection.ExecuteAsync(query, entity);
@@ -67,7 +67,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<bool> Delete(int CompanyId, int ProjetId, int SprintId)
         {
-            var query = "delete from [Sprint] where CompanyId=@CompanyId and ProjetId=@ProjetId and SprintId=@SprintId;";
+            var query = "delete from Sprint where CompanyId=@CompanyId and ProjetId=@ProjetId and SprintId=@SprintId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             parameters.Add("ProjetId", ProjetId, DbType.Int32);

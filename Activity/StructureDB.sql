@@ -2,11 +2,7 @@ USE [Activity]
 --use [master]
 --drop database  [Activity]
 --create  database  [Activity]
-GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+go
 
 
 create table Company(
@@ -15,11 +11,11 @@ create table Company(
 	Active bit NOT NULL,
 	CreationDate datetime NOT NULL,
 	CreationUserId int NULL,
-	constraint PK_Company primary key clustered (CompanyId asc),
+	constraint PK_Company primary key clustered (CompanyId asc)
 	)
 GO
 
-insert into Company values (1,'DevManager',1,GETDATE(),NULL)
+insert into Company (CompanyId,CompanyName,Active,CreationDate) values (1,'DevManager',1,GETDATE())
 
 create table Role(
 	RoleId int NOT NULL,
@@ -46,11 +42,11 @@ create table [User](
 	constraint PK_User primary key clustered (CompanyId asc, UserId asc),
 	constraint FK_User_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_User_Role foreign key (RoleId) references [Role] (RoleId),
-	constraint FK_User_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_User_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
-insert into [User] values (1,1,'SYSTEM ADMINISTRATOR','e10adc3949ba59abbe56e057f20f883e',1,1,GETDATE(),NULL)
+insert into [User] values (1,1,'SYSTEM ADMINISTRATOR','QZdTRnP6Kmk=',1,1,GETDATE(),NULL)
 
 create table UserEmail(
 	CompanyId int NOT NULL,
@@ -65,7 +61,7 @@ create table UserEmail(
 	constraint PK_UserEmail primary key clustered (CompanyId asc, UserId asc, Email asc),
 	constraint FK_UserEmail_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_UserEmail_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId),
-	constraint FK_UserEmail_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_UserEmail_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
@@ -85,7 +81,7 @@ create table UserImage(
 	constraint PK_UserImage primary key clustered (CompanyId asc, UserId asc, Image asc),
 	constraint FK_UserImage_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_UserImage_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId),
-	constraint FK_UserImage_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_UserImage_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
@@ -99,7 +95,7 @@ create table Project(
 	CreationUserId int NOT NULL,
 	constraint PK_Project primary key clustered (CompanyId asc, ProjectId asc),
 	constraint FK_Project_Company foreign key (CompanyId) references Company (CompanyId),
-	constraint FK_Project_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_Project_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
@@ -112,6 +108,7 @@ create table ProjectUser(
 	UserId int NOT NULL,
 	constraint PK_ProjectUser primary key clustered (CompanyId asc, ProjectId asc,UserId asc),
 	constraint FK_ProjectUser_Company foreign key (CompanyId) references Company (CompanyId),
+	constraint FK_ProjectUser_Project foreign key (ProjectId) references Project (CompanyId,ProjectId),
 	constraint FK_ProjectUser_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId)
 	)
 GO
@@ -128,7 +125,7 @@ create table Sprint(
 	constraint PK_Sprint primary key clustered (CompanyId asc, ProjectId asc, SprintId asc),
 	constraint FK_Sprint_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_Sprint_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
-	constraint FK_Sprint_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_Sprint_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
@@ -145,7 +142,7 @@ create table TaskStatus(
 	constraint PK_TaskStatus primary key clustered (CompanyId asc, ProjectId asc, TaskStatusId asc),
 	constraint FK_TaskStatus_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_TaskStatus_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
-	constraint FK_TaskStatus_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_TaskStatus_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
@@ -180,7 +177,7 @@ create table Task(
 	constraint FK_Task_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
 	constraint FK_Task_Sprint foreign key (CompanyId,ProjectId,SprintId) references Sprint (CompanyId,ProjectId,SprintId),
 	constraint FK_Task_TaskStatus foreign key (CompanyId,ProjectId,TaskStatusId) references TaskStatus (CompanyId,ProjectId,TaskStatusId),
-	constraint FK_Task_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_Task_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
@@ -194,7 +191,7 @@ create table TaskPredecessor(
 	constraint FK_TaskPredecessor_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_TaskPredecessor_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
 	constraint FK_TaskPredecessor_Task foreign key (CompanyId,ProjectId,TaskId) references Task (CompanyId,ProjectId,TaskId),
-	constraint FK_TaskPredecessor_PredecessorTask foreign key (CompanyId,ProjectId,TaskId) references Task (CompanyId,ProjectId,TaskId),
+	constraint FK_TaskPredecessor_PredecessorTask foreign key (CompanyId,ProjectId,TaskId) references Task (CompanyId,ProjectId,TaskId)
 	)
 GO
 
@@ -225,7 +222,7 @@ create table TaskTime(
 	constraint FK_TaskTime_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
 	constraint FK_TaskTime_Task foreign key (CompanyId,ProjectId,TaskId) references Task (CompanyId,ProjectId,TaskId),
 	constraint FK_TaskTime_StartUser foreign key (CompanyId,StartUserId) references [User] (CompanyId,UserId),
-	constraint FK_TaskTime_EndUser foreign key (CompanyId,EndUserId) references [User] (CompanyId,UserId),
+	constraint FK_TaskTime_EndUser foreign key (CompanyId,EndUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
@@ -244,7 +241,7 @@ create table TaskComment(
 	constraint FK_TaskComment_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_TaskComment_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
 	constraint FK_TaskComment_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId),
-	constraint FK_TaskComment_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_TaskComment_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO
 
@@ -264,6 +261,6 @@ create table TaskAttach(
 	constraint PK_TaskAttach primary key clustered (CompanyId asc, ProjectId asc, TaskId asc, TaskAttachId asc),
 	constraint FK_TaskAttach_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_TaskAttach_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId),
-	constraint FK_TaskAttach_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId),
+	constraint FK_TaskAttach_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
 	)
 GO

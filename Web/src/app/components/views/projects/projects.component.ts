@@ -3,6 +3,8 @@ import { ProjectService } from '../../../services/project.service';
 import { UserService } from '../../../services/user.service';
 import { project } from 'src/app/interfaces/project';
 import { userReponse } from 'src/app/interfaces/user';
+import { NgxSpinnerService } from "ngx-spinner";
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -12,7 +14,7 @@ import { userReponse } from 'src/app/interfaces/user';
 })
 export class ProjectsComponent implements OnInit {
 
-  constructor(private _project: ProjectService, private _user: UserService) { }
+  constructor(private _project: ProjectService, private _user: UserService, private spinner: NgxSpinnerService, private toastr: ToastrService) { }
 
   editar: boolean;
   lstProject: project[]  = [];
@@ -24,13 +26,16 @@ export class ProjectsComponent implements OnInit {
   }
 
   Consultar(){
+    this.spinner.show();
     this._project.GetAll(this.companyId).subscribe(
       result => {
         console.log(result);
         this.lstProject = result;
+        this.spinner.hide();
       },
-      error => {
-       console.error(error.message);
+      err => {
+       this.toastr.error(err.message);
+       this.spinner.hide();
       }
     );
     this._user.GetAll(this.companyId).subscribe(
@@ -38,8 +43,9 @@ export class ProjectsComponent implements OnInit {
         console.log(result);
         this.lstUser = result;
       },
-      error => {
-       console.error(error.message);
+      err => {
+        this.toastr.error(err.message);
+        this.spinner.hide();
       }
     );
   }

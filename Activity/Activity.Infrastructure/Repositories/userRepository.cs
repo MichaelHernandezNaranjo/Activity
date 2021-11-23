@@ -18,7 +18,7 @@ namespace Activity.Infrastructure.Repositories
         { }
         public async Task<List<userResponse>> GetAll(int CompanyId)
         {
-            var query = "select * from [User] where CompanyId = @CompanyId order by UserId desc;";
+            var query = "select * from User where CompanyId = @CompanyId order by UserId desc;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             using (var connection = CreateConnection())
@@ -30,7 +30,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<userResponse> GetById(int CompanyId, int UserId)
         {
-            var query = "select * from [User] where CompanyId=@CompanyId and UserId = @UserId;";
+            var query = "select * from User where CompanyId=@CompanyId and UserId = @UserId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             parameters.Add("UserId", UserId, DbType.Int32);
@@ -43,8 +43,8 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<int> Add(userRequest entity)
         {
-            var query = "declare @Consecutivo int set @Consecutivo = (select isnull(max(UserId),0) + 1 from [User] where CompanyId = @CompanyId);";
-            query += "insert into [User] OUTPUT Inserted.UserId values (@CompanyId,@Consecutivo,@UserName,'e10adc3949ba59abbe56e057f20f883e',@RoleId,@Active,getdate(),@CreationUserId);";
+            var query = "declare @Consecutivo int set @Consecutivo = (select isnull(max(UserId),0) + 1 from User where CompanyId = @CompanyId);";
+            query += "insert into User OUTPUT Inserted.UserId values (@CompanyId,@Consecutivo,@UserName,'e10adc3949ba59abbe56e057f20f883e',@RoleId,@Active,getdate(),@CreationUserId);";
             var parameters = new DynamicParameters();
             using (var connection = CreateConnection())
             {
@@ -55,7 +55,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<bool> Update(userRequest entity)
         { 
-            var query = "update [User] set UserName=@UserName,RoleId=@RoleId,Active=@Active where CompanyId=@CompanyId and UserId=@UserId;";
+            var query = "update User set UserName=@UserName,RoleId=@RoleId,Active=@Active where CompanyId=@CompanyId and UserId=@UserId;";
             using (var connection = CreateConnection())
             {
                 var res = await connection.ExecuteAsync(query, entity);
@@ -65,7 +65,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<bool> Delete(int CompanyId, int UserId)
         {
-            var query = "delete from [User] where CompanyId=@CompanyId and UserId=@UserId;";
+            var query = "delete from User where CompanyId=@CompanyId and UserId=@UserId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             parameters.Add("UserId", UserId, DbType.Int32);

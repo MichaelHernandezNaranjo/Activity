@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,7 +20,7 @@ namespace Activity.Infrastructure.Repositories
 
         protected IDbConnection CreateConnection()
         {
-            return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return new MySqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         }
 
     }

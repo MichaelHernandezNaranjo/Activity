@@ -19,7 +19,11 @@ namespace Activity.Infrastructure.Repositories
         { }
         public async Task<authenticationResponse> Authentication(authenticationRequest _authenticationRequest)
         {
-            var query = "exec SP_Login @CompanyId, @Email, @Password;";
+            var query = "select t1.CompanyId, t1.UserId, t1.UserName, t2.Email, t1.RoleId , t3.RoleName ";
+            query += "from User t1 ";
+            query += "inner join UserEmail t2 on(t2.CompanyId = t1.CompanyId and t2.UserId = t1.UserId) ";
+            query += "inner join Role t3 on(t3.RoleId = t1.RoleId) ";
+            query += "where t1.Active = 1 and t2.Active = 1 and t2.Verification = 1 and t1.CompanyId = @CompanyId and t2.Email = @Email and t1.Password = @Password;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", _authenticationRequest.CompanyId, DbType.Int32);
             parameters.Add("Email", _authenticationRequest.Email, DbType.String);

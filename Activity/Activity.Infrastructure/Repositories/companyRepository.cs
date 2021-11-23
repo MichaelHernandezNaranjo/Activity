@@ -18,7 +18,7 @@ namespace Activity.Infrastructure.Repositories
         { }
         public async Task<List<companyResponse>> GetAll()
         {
-            var query = "select * from [Company];";
+            var query = "select * from Company;";
             using (var connection = CreateConnection())
             {
                 var res = await connection.QueryAsync<companyResponse>(query);
@@ -28,7 +28,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<companyResponse> GetById(int id)
         {
-            var query = "select * from [Company] where CompanyId=@CompanyId;";
+            var query = "select * from Company where CompanyId=@CompanyId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", id, DbType.Int32);
             using (var connection = CreateConnection())
@@ -40,8 +40,8 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<int> Add(companyRequest entity)
         {
-            var query = "declare @CompanyId int set @CompanyId = select isnull(max(CompanyId),0) + 1 from [Company];";
-            query += "insert into [Company] OUTPUT Inserted.CompanyId values (@CompanyId,@CompanyName,@Active,getdate(),@CreationUserId);";
+            var query = "declare @CompanyId int set @CompanyId = select isnull(max(CompanyId),0) + 1 from Company;";
+            query += "insert into Company OUTPUT Inserted.CompanyId values (@CompanyId,@CompanyName,@Active,getdate(),@CreationUserId);";
             //
             var parameters = new DynamicParameters();
             parameters.Add("CompanyName", entity.CompanyName, DbType.String);
@@ -56,7 +56,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<bool> Update(companyRequest entity)
         {
-            var query = "update [Company] set CompanyName=@CompanyName,Active=@Active where CompanyId=@CompanyId;";
+            var query = "update Company set CompanyName=@CompanyName,Active=@Active where CompanyId=@CompanyId;";
             using (var connection = CreateConnection())
             {
                 var res = await connection.ExecuteAsync(query, entity);
@@ -66,7 +66,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<bool> Delete(int CompanyId)
         {
-            var query = "delete from [Company] where CompanyId=@CompanyId;";
+            var query = "delete from Company where CompanyId=@CompanyId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             using (var connection = CreateConnection())

@@ -18,7 +18,7 @@ namespace Activity.Infrastructure.Repositories
         { }
         public async Task<List<taskStatusResponse>> GetAll(int CompanyId, int ProjectId)
         {
-            var query = "select * from [TaskStatus] where CompanyId = @CompanyId and ProjectId=@ProjectId order by TaskStatusId;";
+            var query = "select * from TaskStatus where CompanyId = @CompanyId and ProjectId=@ProjectId order by TaskStatusId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             parameters.Add("ProjectId", ProjectId, DbType.Int32);
@@ -31,7 +31,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<taskStatusResponse> GetById(int CompanyId, int ProjetId, int TaskStatusId)
         {
-            var query = "select * from [TaskStatus] where CompanyId=@CompanyId and ProjetId = @ProjetId and TaskStatusId=@TaskStatusId;";
+            var query = "select * from TaskStatus where CompanyId=@CompanyId and ProjetId = @ProjetId and TaskStatusId=@TaskStatusId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             parameters.Add("ProjetId", ProjetId, DbType.Int32);
@@ -45,8 +45,8 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<int> Add(taskStatusRequest entity)
         {
-            var query = "declare @Consecutivo int set @Consecutivo = (select isnull(max(TaskStatusId),0) + 1 from [TaskStatus] where CompanyId = @CompanyId and ProjetId = @ProjetId);";
-            query += "insert into [TaskStatus] OUTPUT Inserted.TaskStatusId values (@CompanyId,@ProjetId,@Consecutivo,@TaskStatusName,@Active,getdate(),@CreationUserId);";
+            var query = "declare @Consecutivo int set @Consecutivo = (select isnull(max(TaskStatusId),0) + 1 from TaskStatus where CompanyId = @CompanyId and ProjetId = @ProjetId);";
+            query += "insert into TaskStatus OUTPUT Inserted.TaskStatusId values (@CompanyId,@ProjetId,@Consecutivo,@TaskStatusName,@Active,getdate(),@CreationUserId);";
             var parameters = new DynamicParameters();
             using (var connection = CreateConnection())
             {
@@ -57,7 +57,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<bool> Update(taskStatusRequest entity)
         { 
-            var query = "update [TaskStatus] set TaskStatusName=@TaskStatusName,Active=@Active where CompanyId=@CompanyId and ProjetId = @ProjetId and TaskStatusId=@TaskStatusId;";
+            var query = "update TaskStatus set TaskStatusName=@TaskStatusName,Active=@Active where CompanyId=@CompanyId and ProjetId = @ProjetId and TaskStatusId=@TaskStatusId;";
             using (var connection = CreateConnection())
             {
                 var res = await connection.ExecuteAsync(query, entity);
@@ -67,7 +67,7 @@ namespace Activity.Infrastructure.Repositories
 
         public async Task<bool> Delete(int CompanyId, int ProjetId, int TaskStatusId)
         {
-            var query = "delete from [TaskStatus] where CompanyId=@CompanyId and ProjetId=@ProjetId and TaskStatusId=@TaskStatusId;";
+            var query = "delete from TaskStatus where CompanyId=@CompanyId and ProjetId=@ProjetId and TaskStatusId=@TaskStatusId;";
             var parameters = new DynamicParameters();
             parameters.Add("CompanyId", CompanyId, DbType.Int32);
             parameters.Add("ProjetId", ProjetId, DbType.Int32);

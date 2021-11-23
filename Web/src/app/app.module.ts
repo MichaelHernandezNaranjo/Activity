@@ -29,6 +29,9 @@ import { BacklogComponent } from './components/views/backlog/backlog.component';
 import { DayPilotModule } from 'daypilot-pro-angular';
 //import {DayPilot, DayPilotKanbanComponent} from "daypilot-pro-angular";
 
+import { NgxSpinnerModule } from "ngx-spinner";
+import { ToastrModule } from 'ngx-toastr';
+
 
 
 @NgModule({
@@ -50,7 +53,9 @@ import { DayPilotModule } from 'daypilot-pro-angular';
     FormsModule,
     TagInputModule,
     BrowserAnimationsModule,
-    DayPilotModule
+    DayPilotModule,
+    NgxSpinnerModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     AuthGuard,
