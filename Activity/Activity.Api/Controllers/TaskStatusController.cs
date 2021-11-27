@@ -1,6 +1,7 @@
 ﻿using Activity.Core.Entities;
 using Activity.Core.Exceptions;
 using Activity.Core.Interfaces;
+using Activity.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,13 @@ namespace Activity.Api.Controllers
         {
             _service = service;
         }
-        [HttpGet("{CompanyId}/{ProjectId}")]
-        public async Task<IActionResult> GetAll(int CompanyId, int ProjectId)
+        [HttpGet("{ProjectId}")]
+        public async Task<IActionResult> GetAll(int ProjectId)
         {
             try
             {
-                var res = await _service.GetAll(CompanyId, ProjectId);
+                authenticationResponse _auth = securityService.UserClaim(HttpContext);
+                var res = await _service.GetAll(_auth.CompanyId, ProjectId);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -35,12 +37,13 @@ namespace Activity.Api.Controllers
             }
         }
 
-        [HttpGet("{CompanyId}/{ProjectId}/{TaskStatusId}")]
-        public async Task<IActionResult> GetById(int CompanyId,int ProjectId, int TaskStatusId)
+        [HttpGet("{ProjectId}/{TaskStatusId}")]
+        public async Task<IActionResult> GetById(int ProjectId, int TaskStatusId)
         {
             try
             {
-                var res = await _service.GetById(CompanyId, ProjectId, TaskStatusId);
+                authenticationResponse _auth = securityService.UserClaim(HttpContext);
+                var res = await _service.GetById(_auth.CompanyId, ProjectId, TaskStatusId);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -54,6 +57,9 @@ namespace Activity.Api.Controllers
         {
             try
             {
+                authenticationResponse _auth = securityService.UserClaim(HttpContext);
+                entity.CompanyId = _auth.CompanyId;
+                entity.CreationUserId = _auth.UserId;
                 var res = await _service.Add(entity);
                 return Ok(res);
             }
@@ -68,6 +74,9 @@ namespace Activity.Api.Controllers
         {
             try
             {
+                authenticationResponse _auth = securityService.UserClaim(HttpContext);
+                entity.CompanyId = _auth.CompanyId;
+                entity.CreationUserId = _auth.UserId;
                 var res = await _service.Update(entity);
                 return Ok(res);
             }

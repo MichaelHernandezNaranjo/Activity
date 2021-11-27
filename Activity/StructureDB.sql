@@ -1,8 +1,8 @@
-USE [Activity]
---use [master]
---drop database  [Activity]
---create  database  [Activity]
-go
+USE Activity
+--use master
+--drop database  Activity
+--create  database  Activity
+
 
 
 create table Company(
@@ -13,9 +13,9 @@ create table Company(
 	CreationUserId int NULL,
 	constraint PK_Company primary key clustered (CompanyId asc)
 	)
-GO
 
-insert into Company (CompanyId,CompanyName,Active,CreationDate) values (1,'DevManager',1,GETDATE())
+
+insert into Company (CompanyId,CompanyName,Active,CreationDate) values (1,'DevManager',1,'2021-11-27')
 
 create table Role(
 	RoleId int NOT NULL,
@@ -23,14 +23,14 @@ create table Role(
 	Description varchar(200) NULL,
 	constraint PK_Role primary key clustered (RoleId asc)
 	)
-GO
+
 
 insert into Role values (1,'MANAGER','Tiene acceso a todos los proyectos y a todas las tareas (EDITAR)')
 insert into Role values (2,'ADMIN','Tiene acceso a todas las tareas de los proyectos asignados (EDITAR)')
 insert into Role values (3,'WORKER','Solo puede ver sus tareas (EDITAR)')
 insert into Role values (4,'INVITED','Tiene acceso a todas las tareas de los proyectos asignados (VER)')
 
-create table [User](
+create table User(
 	CompanyId int NOT NULL,
 	UserId int NOT NULL,
 	UserName varchar(120) NOT NULL,
@@ -41,12 +41,16 @@ create table [User](
 	CreationUserId int NULL,
 	constraint PK_User primary key clustered (CompanyId asc, UserId asc),
 	constraint FK_User_Company foreign key (CompanyId) references Company (CompanyId),
-	constraint FK_User_Role foreign key (RoleId) references [Role] (RoleId),
-	constraint FK_User_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_User_Role foreign key (RoleId) references Role (RoleId),
+	constraint FK_User_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
 
-insert into [User] values (1,1,'SYSTEM ADMINISTRATOR','QZdTRnP6Kmk=',1,1,GETDATE(),NULL)
+
+insert into User values (1,1,'SUPER ADMINISTRADOR','QZdTRnP6Kmk=',1,1,'2021-11-27',NULL)
+insert into User values (1,2,'ADMINISTRADOR DE PROYECTOS','QZdTRnP6Kmk=',1,1,'2021-11-27',NULL)
+insert into User values (1,3,'DESARROLLADOR 1','QZdTRnP6Kmk=',1,1,'2021-11-27',NULL)
+insert into User values (1,4,'DESARROLLADOR 2','QZdTRnP6Kmk=',1,1,'2021-11-27',NULL)
+insert into User values (1,5,'INVITADO','QZdTRnP6Kmk=',1,1,'2021-11-27',NULL)
 
 create table UserEmail(
 	CompanyId int NOT NULL,
@@ -60,13 +64,18 @@ create table UserEmail(
 	CreationUserId int NOT NULL,
 	constraint PK_UserEmail primary key clustered (CompanyId asc, UserId asc, Email asc),
 	constraint FK_UserEmail_Company foreign key (CompanyId) references Company (CompanyId),
-	constraint FK_UserEmail_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId),
-	constraint FK_UserEmail_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_UserEmail_User foreign key (CompanyId,UserId) references User (CompanyId,UserId),
+	constraint FK_UserEmail_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
 
 
-insert into UserEmail values (1,1,'michaelhernandeznaranjo@gmail.com','PRINCIPAL',1,GETDATE(),1,GETDATE(),1)
+
+insert into UserEmail values (1,1,'superadmin@dev-manager.com','PRINCIPAL',1,'2021-11-27',1,'2021-11-27',1)
+insert into UserEmail values (1,2,'admin@dev-manager.com','PRINCIPAL',1,'2021-11-27',1,'2021-11-27',1)
+insert into UserEmail values (1,3,'dev1@dev-manager.com','PRINCIPAL',1,'2021-11-27',1,'2021-11-27',1)
+insert into UserEmail values (1,4,'dev2@dev-manager.com','PRINCIPAL',1,'2021-11-27',1,'2021-11-27',1)
+insert into UserEmail values (1,5,'invitado@dev-manager.com','PRINCIPAL',1,'2021-11-27',1,'2021-11-27',1)
+
 
 create table UserImage(
 	CompanyId int NOT NULL,
@@ -80,10 +89,10 @@ create table UserImage(
 	CreationUserId int NOT NULL,
 	constraint PK_UserImage primary key clustered (CompanyId asc, UserId asc, Image asc),
 	constraint FK_UserImage_Company foreign key (CompanyId) references Company (CompanyId),
-	constraint FK_UserImage_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId),
-	constraint FK_UserImage_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_UserImage_User foreign key (CompanyId,UserId) references User (CompanyId,UserId),
+	constraint FK_UserImage_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
+
 
 create table Project(
 	CompanyId int NOT NULL,
@@ -95,11 +104,12 @@ create table Project(
 	CreationUserId int NOT NULL,
 	constraint PK_Project primary key clustered (CompanyId asc, ProjectId asc),
 	constraint FK_Project_Company foreign key (CompanyId) references Company (CompanyId),
-	constraint FK_Project_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_Project_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
 
-insert into Project values (1,1,'Test project',null,1,GETDATE(),1)
+
+insert into Project values (1,1,'Proyecto de prueba 1',null,1,'2021-11-27',1)
+insert into Project values (1,2,'Proyecto de prueba 2',null,1,'2021-11-27',1)
 
 --usuarios asignados al proyecto
 create table ProjectUser(
@@ -109,9 +119,17 @@ create table ProjectUser(
 	constraint PK_ProjectUser primary key clustered (CompanyId asc, ProjectId asc,UserId asc),
 	constraint FK_ProjectUser_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_ProjectUser_Project foreign key (ProjectId) references Project (CompanyId,ProjectId),
-	constraint FK_ProjectUser_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId)
+	constraint FK_ProjectUser_User foreign key (CompanyId,UserId) references User (CompanyId,UserId)
 	)
-GO
+
+	insert into ProjectUser values (1,1,1)
+	insert into ProjectUser values (1,1,2)
+	insert into ProjectUser values (1,1,3)
+	insert into ProjectUser values (1,1,4)
+	insert into ProjectUser values (1,1,5)
+	insert into ProjectUser values (1,2,1)
+	insert into ProjectUser values (1,2,2)
+
 
 create table Sprint(
 	CompanyId int NOT NULL,
@@ -125,11 +143,12 @@ create table Sprint(
 	constraint PK_Sprint primary key clustered (CompanyId asc, ProjectId asc, SprintId asc),
 	constraint FK_Sprint_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_Sprint_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
-	constraint FK_Sprint_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_Sprint_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
 
-insert into Sprint values (1,1,1,'Testing','Sprint de prueba',1,GETDATE(),1)
+
+insert into Sprint values (1,1,1,'Primer Sprint','Sprint de prueba',1,'2021-11-27',1)
+insert into Sprint values (1,2,1,'Primer Sprint','Sprint de prueba',1,'2021-11-27',1)
 
 create table TaskStatus(
 	CompanyId int NOT NULL,
@@ -142,15 +161,21 @@ create table TaskStatus(
 	constraint PK_TaskStatus primary key clustered (CompanyId asc, ProjectId asc, TaskStatusId asc),
 	constraint FK_TaskStatus_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_TaskStatus_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
-	constraint FK_TaskStatus_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_TaskStatus_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
 
-insert into TaskStatus values (1,1,1,'Backlog',1,GETDATE(),1)
-insert into TaskStatus values (1,1,2,'To do',1,GETDATE(),1)
-insert into TaskStatus values (1,1,3,'Testing',1,GETDATE(),1)
-insert into TaskStatus values (1,1,4,'In progress',1,GETDATE(),1)
-insert into TaskStatus values (1,1,5,'Done',1,GETDATE(),1)
+
+insert into TaskStatus values (1,1,1,'Backlog',1,'2021-11-27',1)
+insert into TaskStatus values (1,1,2,'To do',1,'2021-11-27',1)
+insert into TaskStatus values (1,1,3,'In progress',1,'2021-11-27',1)
+insert into TaskStatus values (1,1,4,'Testing',1,'2021-11-27',1)
+insert into TaskStatus values (1,1,5,'Done',1,'2021-11-27',1)
+
+insert into TaskStatus values (1,2,1,'Backlog',1,'2021-11-27',1)
+insert into TaskStatus values (1,2,2,'To do',1,'2021-11-27',1)
+insert into TaskStatus values (1,2,3,'In progress',1,'2021-11-27',1)
+insert into TaskStatus values (1,2,4,'Testing',1,'2021-11-27',1)
+insert into TaskStatus values (1,2,5,'Done',1,'2021-11-27',1)
 
 --Tareas
 create table Task(
@@ -177,9 +202,9 @@ create table Task(
 	constraint FK_Task_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
 	constraint FK_Task_Sprint foreign key (CompanyId,ProjectId,SprintId) references Sprint (CompanyId,ProjectId,SprintId),
 	constraint FK_Task_TaskStatus foreign key (CompanyId,ProjectId,TaskStatusId) references TaskStatus (CompanyId,ProjectId,TaskStatusId),
-	constraint FK_Task_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_Task_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
+
 
 --tareas pedecesoras
 create table TaskPredecessor(
@@ -193,7 +218,7 @@ create table TaskPredecessor(
 	constraint FK_TaskPredecessor_Task foreign key (CompanyId,ProjectId,TaskId) references Task (CompanyId,ProjectId,TaskId),
 	constraint FK_TaskPredecessor_PredecessorTask foreign key (CompanyId,ProjectId,TaskId) references Task (CompanyId,ProjectId,TaskId)
 	)
-GO
+
 
 create table TaskUser(
 	CompanyId int NOT NULL,
@@ -204,9 +229,9 @@ create table TaskUser(
 	constraint FK_TaskUser_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_TaskUser_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
 	constraint FK_TaskUser_Task foreign key (CompanyId,ProjectId,TaskId) references Task (CompanyId,ProjectId,TaskId),
-	constraint FK_TaskUser_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId)
+	constraint FK_TaskUser_User foreign key (CompanyId,UserId) references User (CompanyId,UserId)
 	)
-GO
+
 
 create table TaskTime(
 	CompanyId int NOT NULL,
@@ -221,10 +246,10 @@ create table TaskTime(
 	constraint FK_TaskTime_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_TaskTime_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
 	constraint FK_TaskTime_Task foreign key (CompanyId,ProjectId,TaskId) references Task (CompanyId,ProjectId,TaskId),
-	constraint FK_TaskTime_StartUser foreign key (CompanyId,StartUserId) references [User] (CompanyId,UserId),
-	constraint FK_TaskTime_EndUser foreign key (CompanyId,EndUserId) references [User] (CompanyId,UserId)
+	constraint FK_TaskTime_StartUser foreign key (CompanyId,StartUserId) references User (CompanyId,UserId),
+	constraint FK_TaskTime_EndUser foreign key (CompanyId,EndUserId) references User (CompanyId,UserId)
 	)
-GO
+
 
 
 create table TaskComment(
@@ -240,10 +265,10 @@ create table TaskComment(
 	constraint PK_TaskComment primary key clustered (CompanyId asc,ProjectId asc, TaskId asc, CommentId asc),
 	constraint FK_TaskComment_Company foreign key (CompanyId) references Company (CompanyId),
 	constraint FK_TaskComment_Project foreign key (CompanyId,ProjectId) references Project (CompanyId,ProjectId),
-	constraint FK_TaskComment_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId),
-	constraint FK_TaskComment_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_TaskComment_User foreign key (CompanyId,UserId) references User (CompanyId,UserId),
+	constraint FK_TaskComment_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
+
 
 create table TaskAttach(
 	CompanyId int NOT NULL,
@@ -260,7 +285,7 @@ create table TaskAttach(
 	CreationUserId int NOT NULL,
 	constraint PK_TaskAttach primary key clustered (CompanyId asc, ProjectId asc, TaskId asc, TaskAttachId asc),
 	constraint FK_TaskAttach_Company foreign key (CompanyId) references Company (CompanyId),
-	constraint FK_TaskAttach_User foreign key (CompanyId,UserId) references [User] (CompanyId,UserId),
-	constraint FK_TaskAttach_CreationUser foreign key (CompanyId,CreationUserId) references [User] (CompanyId,UserId)
+	constraint FK_TaskAttach_User foreign key (CompanyId,UserId) references User (CompanyId,UserId),
+	constraint FK_TaskAttach_CreationUser foreign key (CompanyId,CreationUserId) references User (CompanyId,UserId)
 	)
-GO
+

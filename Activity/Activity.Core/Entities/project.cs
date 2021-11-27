@@ -8,14 +8,16 @@ namespace Activity.Core.Entities
 {
     public class project : baseEntity
     {
-        public int CompanyId { get; set; }
         public string ProjectName { get; set; }
         public string Description { get; set; }
     }
 
     public class projectRequest : project
     {
+        //[System.Text.Json.Serialization.JsonIgnore]
+        public int CompanyId { get; set; }
         public int ProjectId { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public int CreationUserId { get; set; }
         public bool Active { get; set; }
         public List<projectUserRequest> ListProjectUser { get; set; }

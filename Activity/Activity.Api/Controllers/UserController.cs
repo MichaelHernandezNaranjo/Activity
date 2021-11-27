@@ -1,6 +1,7 @@
 ﻿using Activity.Core.Entities;
 using Activity.Core.Exceptions;
 using Activity.Core.Interfaces;
+using Activity.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,12 +23,13 @@ namespace Activity.Api.Controllers
             _service = service;
         }
 
-        [HttpGet("{CompanyId}")]
-        public async Task<IActionResult> GetAll(int CompanyId)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                var res = await _service.GetAll(CompanyId);
+                authenticationResponse _auth = securityService.UserClaim(HttpContext);
+                var res = await _service.GetAll(_auth.CompanyId);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -36,12 +38,13 @@ namespace Activity.Api.Controllers
             }
         }
 
-        [HttpGet("{CompanyId}/{UserId}")]
-        public async Task<IActionResult> GetById(int CompanyId, int UserId)
+        [HttpGet("{UserId}")]
+        public async Task<IActionResult> GetById(int UserId)
         {
             try
             {
-                var res = await _service.GetById(CompanyId, UserId);
+                authenticationResponse _auth = securityService.UserClaim(HttpContext);
+                var res = await _service.GetById(_auth.CompanyId, UserId);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -55,6 +58,9 @@ namespace Activity.Api.Controllers
         {
             try
             {
+                authenticationResponse _auth = securityService.UserClaim(HttpContext);
+                entity.CompanyId = _auth.CompanyId;
+                entity.CreationUserId = _auth.UserId;
                 var res = await _service.Add(entity);
                 return Ok(res);
             }
@@ -69,6 +75,9 @@ namespace Activity.Api.Controllers
         {
             try
             {
+                authenticationResponse _auth = securityService.UserClaim(HttpContext);
+                entity.CompanyId = _auth.CompanyId;
+                entity.CreationUserId = _auth.UserId;
                 var res = await _service.Update(entity);
                 return Ok(res);
             }
